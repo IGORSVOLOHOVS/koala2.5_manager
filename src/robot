@@ -1,0 +1,293 @@
+
+
+/*!
+ * set motor speed
+ *
+ * \param motor_left  left motor speed -20..+20
+ * \param motor_right right motor speed -20..+20
+ *
+ * \return an error code:
+ *         - <0  standard error code. See errno.h
+ *         - >=0 on success
+ */
+int koala_set_motors_speed(int motor_left,int motor_right)
+{
+
+  int rc;
+
+	rc = koala_sendcommand(koala_I2C_REG_ADDRESS_LEFT_MOTOR,1, (char*)&motor_left);
+	rc = koala_sendcommand(koala_I2C_REG_ADDRESS_RIGHT_MOTOR,1, (char*)&motor_right);
+
+  return rc;
+
+}
+
+/*!
+ * get motor speed
+ *
+ * \param motor_left  left motor speed -20= max backward, 0= stop +20=max forward
+ * \param motor_right right motor speed -20= max backward, 0= stop +20=max forward
+ *
+ * \return an error code:
+ *         - <0  standard error code. See errno.h
+ *         - >=0 on success
+ *
+ * \remark As the motors are in open loop, the values will be the same as the last SetSpeed command
+ */
+int koala_get_motors_speed(int *motor_left,int *motor_right)
+{
+
+  int rc;
+  
+  signed char ml,mr;
+ 
+	rc = koala_getcommand(koala_I2C_REG_ADDRESS_LEFT_MOTOR,1,(signed char *)&ml); // casting for getting sign
+	rc = koala_getcommand(koala_I2C_REG_ADDRESS_RIGHT_MOTOR,1,(signed char *)&mr);
+
+  *motor_left=ml;
+  *motor_right=mr;
+	
+
+  return rc;
+
+}
+
+/*!
+ * get the proximity value to an obstacle (0..1024: The smaller the value, the further the object is)
+ *
+ * \param proximity_array is a buffer with the data of each sensor: left, front_left, front, front_right, right, rear,none, ground_front_left, ground_front_right, ground_left, ground_right
+ *
+ *
+ * \return an error code:
+ *         - <0  standard error code. See errno.h
+ *         - >=0 on success
+ */
+int koala_proximity_ir(unsigned int *proximity_array)
+{
+
+  char buf[2*koala_NUMBER_OF_IR_SENSORS];
+  int rc,i;
+
+	rc = koala_getcommand(koala_I2C_REG_ADDRESS_IR_PROXIMITY_SENSORS,2*koala_NUMBER_OF_IR_SENSORS,buf);
+
+  for (i=0; i< koala_NUMBER_OF_IR_SENSORS;i++)
+  {
+    proximity_array[i] = (buf[2*i] | buf[2*i+1]<<8);
+  }
+
+  return rc;
+
+}
+
+/*!
+ * get the ambiant light (0..1024: 0 means light saturation, big value= no IR light source)
+ *
+* \param ambiant_array is a buffer with the data of each sensor: left, front_left, front, front_right, right, rear,none, ground_front_left, ground_front_right, ground_left, ground_right
+ *
+ * \return an error code:
+ *         - <0  standard error code. See errno.h
+ *         - >=0 on success
+ *
+ */
+int koala_ambiant_ir(unsigned int *ambiant_array)
+{
+  int rc,i;
+  char buf[2*koala_NUMBER_OF_IR_SENSORS];
+
+	rc = koala_getcommand(koala_I2C_REG_ADDRESS_IR_LIGHT_SENSORS,2*koala_NUMBER_OF_IR_SENSORS,buf);
+
+  for (i=0; i< koala_NUMBER_OF_IR_SENSORS;i++)
+  {
+    ambiant_array[i] = (buf[2*i] | buf[2*i+1]<<8);
+  }
+
+	return rc;
+
+
+}
+
+/*!
+ * get the time stamp. The unit is the millisecond. The maximum value is based on a 32 bits variable
+ * (more than 1000 hours). This value is reset at each boot.
+ *
+ * \param timestamp pointer to the timestamp [ms]
+ *
+ * \return an error code:
+ *         - <0  standard error code. See errno.h
+ *         - >=0 on success
+ *
+ */
+int koala_get_time_stamp(unsigned int *timestamp)
+{
+  int rc;
+
+  char out[4];
+
+	rc = koala_getcommand(koala_I2C_REG_ADDRESS_TIME_STAMP,4,out);
+
+//	printf("timestamp: %d %d %d %d\n",out[3],out[2],out[1],out[0]);
+
+	*timestamp = out[0] | (out[1] | (out[2] | out[3]<<8 )  <<8) <<8;
+	
+
+	return rc;
+}
+
+/*!
+ * reset the time stamp.
+ *
+ * \param (none)
+ *
+ * \return an error code:
+ *         - <0  standard error code. See errno.h
+ *         - >=0 on success
+ *
+ */
+int koala_reset_time_stamp()
+{
+  int rc;
+
+  char out[4]={0};
+
+	rc = koala_sendcommand(koala_I2C_REG_ADDRESS_TIME_STAMP,4,out);
+
+	return rc;
+}
+
+/*!
+ * Configure the note of the buzzer.
+ *
+ * \param buzzer_note 0 = will turn it off, notes of range [1-48], see K-Junior V2 User's Manual
+ *
+ * \return an error code:
+ *         - <0  standard error code. See errno.h
+ *         - >=0 on success
+ *
+ */
+int koala_buzzer(unsigned char buzzer_note)
+{
+  int rc;
+
+	if (buzzer_note>48)
+		return -EINVAL;
+
+	rc = koala_sendcommand(koala_I2C_REG_ADDRESS_BUZZER,1,&buzzer_note);
+
+	return rc;
+}
+
+/*!
+ * get the switches value
+ *
+ * \param switches : switch 1 = bit 0 (LSB) , switch 2 = bit 1, switch 3 = bit 2
+ *
+ * \return an error code:
+ *         - <0  standard error code. See errno.h
+ *         - >=0 on success
+ *
+ */
+int koala_get_switches(unsigned char *switches)
+{
+  int rc;
+  rc = koala_getcommand(koala_I2C_REG_ADDRESS_SWITCHES,1,switches);
+  return rc;
+}
+
+#define BATTERY_VOLTAGE_CONST 620.5
+
+/*!
+ * get battery voltage
+ *
+ * \param voltage battery voltage 
+ *
+ * \return an error code:
+ *         - <0  standard error code. See errno.h
+ *         - >=0 on success
+ */
+int koala_get_battery_voltage(double *voltage)
+{
+
+  char volt[2];
+	int rc;
+
+	rc = koala_getcommand(koala_I2C_REG_ADDRESS_BATTERY,2, volt);
+
+	*voltage= (volt[0] | volt[1]<<8)/BATTERY_VOLTAGE_CONST;
+
+  return rc;
+
+}
+
+
+/*!
+ * change the LED value
+ *
+ * \param led_number 0-4
+ * \param led_value 0  = OFF; 1 = on, 2, toggle, 3 = blinks
+ *
+ * \return an error code:
+ *         - <0  standard error code. See errno.h
+ *         - >=0 on success
+ *
+ */
+int koala_change_led(unsigned char led_number, unsigned char led_value)
+{
+  int rc;
+  unsigned int led_reg_address[] = koala_LEDS_REGISTERS;
+
+  if (led_number>4)
+  {
+    return koala_ERROR_INVALID_LED_NUMBER;
+  }
+
+  if (led_value>3)
+  {
+    return koala_ERROR_INVALID_LED_VALUE;
+  }
+
+	rc = koala_sendcommand(led_reg_address[led_number],1,&led_value);
+
+	return rc;
+}
+
+
+
+
+/*!
+ *  read the last address and data bytes received by the TV remote receiver (RC5 type)
+. *
+ * \param address address
+ * \param data data
+ *
+ * \return - >=0 OK
+ *          - <0 error
+ */
+int koala_get_TV_remote(unsigned int *address,unsigned int *data)
+{
+  int rc;
+
+  rc=koala_getcommand( koala_I2C_REG_ADDRESS_TV_RECEIVED_ADDRESS ,1,(unsigned char *)address);
+  rc=koala_getcommand( koala_I2C_REG_ADDRESS_TV_RECEIVED_DATA ,1,(unsigned char *)data);
+
+	return rc;
+}
+
+/*!
+ *  send and addres and a data through the IR emitter (RC5 type).
+ *
+ * \param address address
+ * \param data data
+ *
+ * \return - >=0 OK
+ *          - <0 error
+ */
+int koala_transmit_TV_remote(unsigned int address,unsigned int data)
+{
+  int rc;
+
+	rc = koala_sendcommand(koala_I2C_REG_ADDRESS_TV_SEND_ADDRESS,1,(unsigned char *)&address);
+	//printf("\nDEBUG: sent address %d | rc %d \n",address,rc);
+	rc = koala_sendcommand(koala_I2C_REG_ADDRESS_TV_SEND_DATA,1,(unsigned char *)&data);
+	//printf("\nDEBUG: sent data %d | rc %d \n",data,rc);
+	return rc;
+}
