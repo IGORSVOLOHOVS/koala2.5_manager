@@ -14,7 +14,7 @@ echo "Step 1: Navigating to the source directory (src)..."
 cd src
 
 echo "Step 2: Cleaning the build artifacts..."
-make clean
+sudo make clean -w TARGET_SYSTEM="$TARGET_SYSTEM" LIBNAME="$LIBNAME" LIBVER="$LIBVER"
 
 echo "Build artifacts cleaned!"
 
