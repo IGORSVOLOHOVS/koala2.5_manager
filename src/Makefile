@@ -1,28 +1,24 @@
 SRCS		= $(wildcard *.c)
 OBJS		= $(patsubst %.c,%.o,${SRCS})
 
+KOALA_LANGUAGE	= gcc
+KOALA_FLAGS	= -fPIC
 
-
-BUILD		= ../build-${TARGET_SYSTEM}
+BUILD		= ../build-${TARGET_SYSTEM}-${KOALA_LANGUAGE}
 INSTALL_PATH = /usr
 
 ifeq ($(DEBUG),1)
-CFLAGS 		= -g -fPIC
+KOALA_FLAGS	 	+= -g 
 else
-CFLAGS 		= -O3 -fPIC
+KOALA_FLAGS	 	+= -O3
 endif
 
 LIBS		= -lm
-
-
 
 #---------------------------------------------------------------------
 # Rules
 #---------------------------------------------------------------------
 all: 	${LIBNAME}
-
-
-
 
 doc: docs
 docs:
@@ -38,7 +34,7 @@ endif
 	@echo "Building ${LIBNAME}.so.${LIBVER}"
 	@mkdir -p ${BUILD}/lib
 	@mkdir -p ${BUILD}/include/koala
-	$(CC) -o ${BUILD}/lib/${LIBNAME}.so.${LIBVER} -shared $(LIBS) ${OBJS}
+	$(KOALA_LANGUAGE) -o ${BUILD}/lib/${LIBNAME}.so.${LIBVER} -shared $(LIBS) ${OBJS}
 	@echo "Building ${LIBNAME}.a"
 	@$(AR) r ${BUILD}/lib/${LIBNAME}.a ${OBJS}
 	@echo "Adding includes"
@@ -62,20 +58,29 @@ install:
 	@rm -f ${INSTALL_PATH}/lib/${LIBNAME}.so
 	@cd ${INSTALL_PATH}/lib &&  cp -s ${LIBNAME}.so.${LIBVER} ${LIBNAME}.so
 
+uninstall:
+	@echo "Uninstalling library and headers (sudo required)"
+	@rm -f ${INSTALL_PATH}/lib/${LIBNAME}.so.${LIBVER}
+	@echo "${INSTALL_PATH}/lib/${LIBNAME}.so.${LIBVER} uninstalled!"
+	@rm -f ${INSTALL_PATH}/lib/${LIBNAME}.so
+	@echo "${INSTALL_PATH}/lib/${LIBNAME}.so uninstalled!"
+	@rm -f ${INSTALL_PATH}/lib/${LIBNAME}.a
+	@echo "${INSTALL_PATH}/lib/${LIBNAME}.a uninstalled!"
+	@rm -rf ${INSTALL_PATH}/include/koala
+	@echo "${INSTALL_PATH}/include/koala uninstalled!"
+
 depend:	
 	@echo "Building dependencies"
 	@rm -f .depend
 	@touch .depend
 	@makedepend ${SYS_INCLUDES} -Y -f .depend ${SRCS}
 
-
 %.o: %.c %.h
 	@echo "Building $@"
-	@$(CC) -c $(CFLAGS) $< -o $@
+	@$(KOALA_LANGUAGE) -c $(KOALA_FLAGS) $< -o $@
 
-.PHONY: all clean depend docs install
+.PHONY: all clean depend docs install uninstall
 
 ifeq (.depend,$(wildcard .depend))
 include .depend 
 endif
-

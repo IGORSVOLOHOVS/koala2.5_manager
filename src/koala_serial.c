@@ -42,6 +42,7 @@
 
 
 #include <stdlib.h>
+#include <unistd.h>
 #include <fcntl.h>
 #include <sys/stat.h>
 #include <termio.h>
@@ -75,7 +76,7 @@ koala_rs232_t * koala_rs232_open(
 		baudrate = B115200;
 	}
 
-  rs232 = malloc(sizeof(koala_rs232_t));
+  rs232 = (koala_rs232_t*)malloc(sizeof(koala_rs232_t));
 
   fcntl(fd, F_SETFL, 0); // blocking input
 

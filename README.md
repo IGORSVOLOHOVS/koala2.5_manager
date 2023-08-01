@@ -1,80 +1,84 @@
 # ![1690364539971](image/README/1690364539971.jpg)koala2.5_manager
 
-The "koala2.5_manager" is a collection of bash scripts to simplify the process of building libraries and projects for the Koala2.5 robot, supporting both C and C++ languages. The manager facilitates the setup and building of projects, making development more efficient for Koala2.5 robot projects.
+**Koala 2.5 Manager** is a utility script for creating and initializing C and C++ projects with the Koala library. It simplifies the setup process by generating project directories, source files, and a Makefile with the necessary build and run configurations. The manager facilitates the setup and building of projects, making development more efficient for Koala2.5 robot projects.
 
 ## Contents
 
-1. [k_create](#k_create)
-2. [k_init](#k_init)
-3. [k_examples](#k_examples)
+1. [k_create](#k_create.sh)
+2. [k_init](#k_init.sh)
 
-## k_create
+## Requirements
 
-![1690364226924](image/README/1690364226924.png)The `k_create` script creates a new project directory with the necessary structure and boilerplate files for C or C++ projects. It takes two arguments - the programming language ("c" or "cpp") and the project name.
+- Bash (Bourne Again SHell)
+- GCC (GNU Compiler Collection) for C projects
+- G++ (GNU Compiler Collection) for C++ projects
 
-Usage:
+## Usage
 
-```bash
-./k_create <language> <project_name>
-```
+### k_create.sh
+![1690364226924](image/README/1690364226924.png)
 
-Example:
-
-```bash
-./k_create cpp my_project
-```
-
-The script will create a new directory "my_project" with the following structure:
-
-```
-my_project/
-|-- src/
-|   |-- main.cpp (for C++ projects) OR main.c (for C projects)
-|   |-- my_project.cpp (for C++ projects) OR my_project.c (for C projects)
-|-- include/
-|   |-- my_project.h
-|-- lib/
-|-- Makefile
-```
-
-## k_init
-
-![1690364214275](image/README/1690364214275.png)The `k_init` script sets up the build environment for Koala2.5 projects. It performs the following steps:
-
-1. Navigates to the "src" directory.
-2. Cleans build artifacts using `make clean`.
-3. Builds the project using `make -w`.
-4. Installs the library using `sudo make -w install TARGET_SYSTEM=x86 LIBNAME=libkoala LIBVER=1.0`.
-5. Navigates back to the main directory.
-
-Usage:
+The `k_create.sh` script allows you to create a new C or C++ project with the Koala library.
 
 ```bash
-./k_init
+Usage: k_create.sh <language> <project_name>
+
+Parameters:
+  <language>     : Use 'c' for C projects or 'cpp' for C++ projects.
+  <project_name> : The name of the new project.
 ```
 
-## k_examples
-
-The `k_examples` script simplifies the build and execution of examples in the "examples" directory. If no argument is provided, it will build all examples and list the executable files.
-
-![1690364274608](image/README/1690364274608.png)
-
-Usage:
+Example usage:
 
 ```bash
-./k_examples
+./k_create.sh c my_c_project
 ```
 
-If an argument (executable filename) is provided, it will build all examples, list the executable files, and execute the specified example.
-
-![1690364318050](image/README/1690364318050.png)
-
-Usage:
+This will create a new C project named `my_c_project` with the necessary directory structure, source files, and a Makefile.
 
 ```bash
-./k_examples koala_test
+./k_create.sh cpp my_cpp_project
 ```
 
-The script will execute the specified "my_example" if it exists in the "examples" directory and is executable.
+This will create a new C++ project named `my_cpp_project` with the necessary directory structure, source files, and a Makefile. To build and run `my_cpp_project` project:
 
----
+```bash
+cd my_cpp_project
+make
+make run
+```
+
+### k_init.sh
+![1690364214275](image/README/1690364214275.png)
+
+The `k_init.sh` script sets up the build environment, compiles the project, and installs the Koala library.
+
+```bash
+Usage: k_init.sh
+```
+
+The script will guide you through the build and installation process. Make sure you have the required build tools and permissions to install the library.
+
+## Project Structure
+
+The generated project directory structure will be as follows:
+
+```
+project_name/
+├── src/
+│   ├── main.c (or main.cpp for C++ projects)
+│   ├── project_name.c (or project_name.cpp for C++ projects)
+│   └── project_name.h
+├── include/
+│   └── project_name.h
+├── lib/
+│   ├── libkoala.so
+│   ├── libkoala.a
+│   └── libkoala.so.1.0
+└── Makefile
+```
+
+- `src/`: Contains the source files for the main program and the project-specific code.
+- `include/`: Contains the header files for the project.
+- `lib/`: Contains the Koala library files.
+- `Makefile`: The Makefile that automates the build process.
