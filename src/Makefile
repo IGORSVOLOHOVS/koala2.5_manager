@@ -69,6 +69,13 @@ uninstall:
 	@rm -rf ${INSTALL_PATH}/include/koala
 	@echo "${INSTALL_PATH}/include/koala uninstalled!"
 
+python:
+	@echo "Building ${LIBNAME}.so"
+	@mkdir -p ${BUILD}/lib
+	gcc -o ${BUILD}/lib/${LIBNAME}.so -shared $(LIBS) ${OBJS}
+	@echo "Adding python library"
+	@cp *.py ${BUILD}
+
 depend:	
 	@echo "Building dependencies"
 	@rm -f .depend
@@ -79,7 +86,7 @@ depend:
 	@echo "Building $@"
 	@$(KOALA_LANGUAGE) -c $(KOALA_FLAGS) $< -o $@
 
-.PHONY: all clean depend docs install uninstall
+.PHONY: all clean depend docs install uninstall python
 
 ifeq (.depend,$(wildcard .depend))
 include .depend 

@@ -6,6 +6,7 @@ LIBNAME="libkoala"
 LIBVER="1.0"
 KOALA_LANGUAGE_CPP="g++" 
 KOALA_LANGUAGE_C="gcc"
+KOALA_LANGUAGE_PYTHON="python"
 KOALA_FLAGS="-lm"
 
 
@@ -22,14 +23,16 @@ echo "Step 2: Uninstall old libraries and includes from /usr/lib and /usr/includ
 sudo make uninstall -w TARGET_SYSTEM="$TARGET_SYSTEM" LIBNAME="$LIBNAME" LIBVER="$LIBVER" KOALA_LANGUAGE="$KOALA_LANGUAGE_C"
 sudo make uninstall -w TARGET_SYSTEM="$TARGET_SYSTEM" LIBNAME="$LIBNAME" LIBVER="$LIBVER" KOALA_LANGUAGE="$KOALA_LANGUAGE_CPP"
 
-echo "Step 3: Clean and build the C and C++ libraries and includes..."
+echo "Step 3: Clean and build the C and C++ and Python libraries and includes..."
 sudo make clean -w TARGET_SYSTEM="$TARGET_SYSTEM" LIBNAME="$LIBNAME" LIBVER="$LIBVER" KOALA_LANGUAGE="$KOALA_LANGUAGE_C"
 sudo make -w TARGET_SYSTEM="$TARGET_SYSTEM" LIBNAME="$LIBNAME" LIBVER="$LIBVER" KOALA_LANGUAGE="$KOALA_LANGUAGE_C"
+
+sudo make python -w TARGET_SYSTEM="$TARGET_SYSTEM" LIBNAME=koala LIBVER="$LIBVER" KOALA_LANGUAGE="$KOALA_LANGUAGE_PYTHON"
 
 sudo make clean -w TARGET_SYSTEM="$TARGET_SYSTEM" LIBNAME="$LIBNAME" LIBVER="$LIBVER" KOALA_LANGUAGE="$KOALA_LANGUAGE_CPP"
 sudo make -w TARGET_SYSTEM="$TARGET_SYSTEM" LIBNAME="$LIBNAME" LIBVER="$LIBVER" KOALA_LANGUAGE="$KOALA_LANGUAGE_CPP"
 
-echo "Step 4: Do you want to install IMPORTANT: C(not C++) libraries and includes to /usr/lib and /usr/include? (y/n)"
+echo "Step 4: Do you want to install IMPORTANT: C(not C++ and not Python) libraries and includes to /usr/lib and /usr/include? (y/n)"
 read -r install_choice
 
 if [[ $install_choice == 'y' || $install_choice == 'Y' ]]; then
