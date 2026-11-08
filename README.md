@@ -69,3 +69,7 @@ Almost all of this repository runs only on the robot. The one part that needs no
 ## Licence
 
 The Koala library in `src/` is `Copyright (C) Julien Tharin, K-Team S.A. 2013`, under the GNU Lesser General Public License 2.1 or later, as each of its files states. There is no `LICENSE` file at the root: which licence the scripts take is still the owner's decision.
+
+## Lab requirements
+
+This repository complies with [revision 4.0.0](http://127.0.0.1:3000/igors-lab/software-requirements/src/tag/v4.0.0/BEST_REQUIREMENTS.md) of the lab requirements, except R-02 (#8), R-09 (#9), R-12 (#10), R-13 (#11), R-13 (#12), R-14 (#13), R-18 (#14), R-37 (#15), R-41 (#16), R-42 (#17).
