@@ -47,7 +47,7 @@
 
 #define KOALA_MAX_BUFFER 1024 // max input/output buffer for sending/receiving data
 
-#define KOALA_DELIM ","  // delimiter for parameters
+#include "koala_parse.h"  // KOALA_DELIM, the delimiter for parameters, and process_param
 
 // bit configuration for auto monitoring mode
 #define KOALA_AUTOM_US_SENSOR_BIT  1<<0	// US sensor
