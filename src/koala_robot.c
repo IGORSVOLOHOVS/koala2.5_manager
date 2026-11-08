@@ -47,37 +47,7 @@ koala_rs232_t *koala_rs232; // serial port device
 
 /*---- private Functions --------------------------------------------------*/
 
-/*! process integer parameters from a string into a integer array
- *
- * \param source array of char containing  input parameters sperated by DELIM
- * \param destination array of integer containing parameters
- * \param nb_arg number of parameters found
- *
- * \return A value:
- *       - <0 on error
- *       - 0 on success
- *
- */
-int process_param(char *source,int *destination,int nb_arg)
-{
-  int narg=0;
-  char *pch;
-  
-	pch = strtok (source,KOALA_DELIM);
-	while (pch != NULL)
-	{		
-		if (sscanf(pch,"%d",&destination[narg])!=1)
-		  return -1;
-		
-	  pch = strtok (NULL, KOALA_DELIM);
-	  narg++;
-	    
-	  if (narg == nb_arg)
-			break;
-	}
-	
-	return 0;	
-}	
+/* process_param, which parses an answer's fields, lives in koala_parse.c: it needs no robot. */
 
 /* ---- Exported Functions------------------------------------------------ */
 
