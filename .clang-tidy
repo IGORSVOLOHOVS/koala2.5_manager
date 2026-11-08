@@ -1,0 +1,11 @@
+Checks: >-
+  -*,
+  clang-diagnostic-*,
+  clang-analyzer-*,
+  bugprone-*,
+  performance-*,
+  portability-*,
+  -clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling
+WarningsAsErrors: '*'
+HeaderFilterRegex: '.*[/\]src[/\]koala_parse\.h$'
+ExtraArgs: ['--target=x86_64-w64-mingw32']
