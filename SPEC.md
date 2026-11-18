@@ -6,6 +6,33 @@ difference is listed in [3.10](#310-declared-but-not-implemented) or in
 [docs/README.md, known limitations](docs/README.md#known-limitations-and-problems).
 The documentation hub is [docs/README.md](docs/README.md).
 
+<!-- jira-sync:start -->
+Jira: KAN-81
+
+## Tasks
+
+This list is one ticket in Jira project KAN, [KAN-81](https://igorsvolohovs.atlassian.net/browse/KAN-81). Each line is a checkbox there: tick it in Jira and the sync ticks it here; add a checkbox there and it is appended here. Done items are the features described in section 3; open items are what the project declares but the code does not do yet.
+
+- [x] Project generator (`k_create.sh`) (section 3.1) <!-- spec-project-generator-kcreate-sh -->
+- [x] Library build and install (`k_init.sh`, `src/Makefile`) (section 3.2) <!-- spec-library-build-and-install-kinit-sh-src-makefile -->
+- [x] Library lifecycle and serial link (section 3.3) <!-- spec-library-lifecycle-and-serial-link -->
+- [x] Robot command set (section 3.4) <!-- spec-robot-command-set -->
+- [x] Answer parser (`process_param`) (section 3.5) <!-- spec-answer-parser-processparam -->
+- [x] Terminal helpers (`koala_utils`) (section 3.6) <!-- spec-terminal-helpers-koalautils -->
+- [x] Python wrapper (`src/koala.py`) (section 3.7) <!-- spec-python-wrapper-src-koala-py -->
+- [x] Ultrasonic sensors off (`projects/k_us_sensor_off.sh`) (section 3.8) <!-- spec-ultrasonic-sensors-off-projects-kussensoroff-sh -->
+- [x] Desktop build and lab tooling (section 3.9) <!-- spec-desktop-build-and-lab-tooling -->
+- [ ] The created project "links the Koala library" (declared, not implemented) <!-- spec-the-created-project-links-the-koala-library -->
+- [ ] `k_create.sh` uses what `k_init.sh` builds (declared, not implemented) <!-- spec-kcreate-sh-uses-what-kinit-sh-builds -->
+- [ ] Project tree with `src/project_name.h` (declared, not implemented) <!-- spec-project-tree-with-src-projectname-h -->
+- [ ] Doxygen input `../examples` (declared, not implemented) <!-- spec-doxygen-input-examples -->
+- [ ] `KOALA_FLAGS="-lm"` (declared, not implemented) <!-- spec-koalaflags-lm -->
+- [ ] `KOALA_RS232_MESSAGE_ERROR_CHAR '#'` (declared, not implemented) <!-- spec-koalars232messageerrorchar -->
+- [ ] Motor speed, IR proximity, buzzer, LEDs and TV remote over I2C registers (declared, not implemented) <!-- spec-motor-speed-ir-proximity-buzzer-leds-and-tv-remote -->
+- [ ] Licence of the scripts (declared, not implemented) <!-- spec-licence-of-the-scripts -->
+
+<!-- jira-sync:end -->
+
 ## 1. Purpose and scope
 
 The system prepares a development environment for a K-Team Koala 2.5 robot on the
